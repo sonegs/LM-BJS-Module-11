@@ -143,14 +143,17 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 // DECLARACION DE VARIABLES
 var reservas = [{
   tipoHabitacion: "standard",
+  desayuno: false,
   pax: 1,
   noches: 3
 }, {
   tipoHabitacion: "standard",
+  desayuno: false,
   pax: 1,
   noches: 4
 }, {
   tipoHabitacion: "suite",
+  desayuno: true,
   pax: 2,
   noches: 1
 }]; // CASO 1: RESERVAS DE HOTEL
@@ -160,12 +163,15 @@ var TotalReservas = /*#__PURE__*/function () {
     _classCallCheck(this, TotalReservas);
 
     // Se declara el constructor y sus variables
-    this.clients = this.totalClients();
+    this.clients = reserva.pax;
     this.iva = 0.21;
     this.days = reserva.noches;
     this.room = reserva.tipoHabitacion;
-    this.priceRoom = this.totalRoom();
-    this.totalClients = 0;
+    this.totalClients = this.totalClients();
+    ;
+    this.breakfast = reserva.desayuno;
+    this.totalRoom = this.totalRoom();
+    this.totalBreakfast = this.ifBreakfast();
     this.subtotal = this.subtotal();
     this.total = 0;
   }
@@ -174,18 +180,29 @@ var TotalReservas = /*#__PURE__*/function () {
     key: "totalRoom",
     value: function totalRoom() {
       // Calcula el precio segun el tipo de habitacion
-      this.room === "standard" ? this.price = 100 : this.price = 150;
+      this.room === "standard" ? this.priceRoom = 100 : this.priceRoom = 150;
+      return this.priceRoom;
     }
   }, {
     key: "totalClients",
     value: function totalClients() {
       // Añade 40 euros si hay más de un huesped
       this.clients > 1 ? this.priceClient = (this.clients - 1) * 40 : this.priceClient = 0;
+      return this.priceClient;
+    } // Esta función se añade para el ejercicio adicional
+
+  }, {
+    key: "ifBreakfast",
+    value: function ifBreakfast() {
+      this.breakfast === true ? this.priceBreakfast = 15 : this.priceBreakfast = 1;
+      return this.priceBreakfast;
     }
   }, {
     key: "subtotal",
     value: function subtotal() {
-      return this.price * this.days + this.priceClient;
+      // Este if distingue dos opciones, en función de si el desayuno ha sido añadido o no
+      this.breakfast === true ? this.subtotal = this.priceRoom * this.days + this.priceClient + this.priceBreakfast * this.clients * this.days : this.subtotal = this.priceRoom * this.days + this.priceClient;
+      return this.subtotal;
     }
   }, {
     key: "total",
@@ -248,7 +265,8 @@ var TourOperador = /*#__PURE__*/function (_TotalReservas) {
     key: "totalRoom",
     value: function totalRoom() {
       // modificamos el precio de las habitaciones
-      this.price = 100;
+      this.priceRoom = 100;
+      return this.priceRoom;
     }
   }, {
     key: "total",

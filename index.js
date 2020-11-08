@@ -2,16 +2,19 @@
 
 const reservas = [{
         tipoHabitacion: "standard",
+        desayuno: false,
         pax: 1,
         noches: 3
     },
     {
         tipoHabitacion: "standard",
+        desayuno: false,
         pax: 1,
         noches: 4
     },
     {
         tipoHabitacion: "suite",
+        desayuno: true,
         pax: 2,
         noches: 1
     }
@@ -21,24 +24,36 @@ const reservas = [{
 
 class TotalReservas {
     constructor(reserva) { // Se declara el constructor y sus variables
-        this.clients = this.totalClients();
+        this.clients = reserva.pax;
         this.iva = 0.21;
         this.days = reserva.noches;
         this.room = reserva.tipoHabitacion;
-        this.priceRoom = this.totalRoom();
-        this.totalClients = 0;
+        this.totalClients = this.totalClients();;
+        this.breakfast = reserva.desayuno;
+        this.totalRoom = this.totalRoom();
+        this.totalBreakfast = this.ifBreakfast();
         this.subtotal = this.subtotal();
         this.total = 0;
     }
     totalRoom() { // Calcula el precio segun el tipo de habitacion
-        this.room === "standard" ? this.price = 100 : this.price = 150;
+        this.room === "standard" ? this.priceRoom = 100 : this.priceRoom = 150;
+        return this.priceRoom;
     }
 
     totalClients() { // Añade 40 euros si hay más de un huesped
-        this.clients > 1 ? this.priceClient = (this.clients - 1) * 40 : this.priceClient = 0;
+            this.clients > 1 ? this.priceClient = (this.clients - 1) * 40 : this.priceClient = 0;
+            return this.priceClient;
+        }
+        // Esta función se añade para el ejercicio adicional
+    ifBreakfast() {
+        this.breakfast === true ? this.priceBreakfast = 15 : this.priceBreakfast = 1;
+        return this.priceBreakfast;
     }
+
     subtotal() {
-        return (this.price * this.days) + this.priceClient;
+        // Este if distingue dos opciones, en función de si el desayuno ha sido añadido o no
+        this.breakfast === true ? this.subtotal = (this.priceRoom * this.days) + this.priceClient + ((this.priceBreakfast * this.clients) * this.days) : this.subtotal = (this.priceRoom * this.days) + this.priceClient;
+        return this.subtotal;
     }
     get total() {
         return this.subtotal + (this.iva * this.subtotal);
@@ -74,7 +89,8 @@ class TourOperador extends TotalReservas { // se declara la clase hija
     }
 
     totalRoom() { // modificamos el precio de las habitaciones
-        this.price = 100;
+        this.priceRoom = 100;
+        return this.priceRoom;
     }
 
     get total() {
